@@ -7,7 +7,14 @@ import com.ferri.arnus.enderhopper.blockentities.EnderHopperBE;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -27,10 +34,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class EnderHopper extends Block implements EntityBlock{
 	public static final DirectionProperty FACING = BlockStateProperties.FACING_HOPPER;
@@ -113,6 +122,52 @@ public class EnderHopper extends Block implements EntityBlock{
 		return BlockEntityRegistry.ENDERHOPPER.get().create(p_153215_, p_153216_);
 	}
 	
+	@Override
+	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
+			BlockHitResult pHit) {
+		if (pLevel.isClientSide) {
+	         return InteractionResult.SUCCESS;
+	      } else {
+	         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+	         if (blockentity instanceof EnderHopperBE hopper) {
+//	            pPlayer.openMenu(new MenuProvider() {
+//					
+//					@Override
+//					public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
+//						// TODO Auto-generated method stub
+//						return null;
+//					}
+//					
+//					@Override
+//					public Component getDisplayName() {
+//						// TODO Auto-generated method stub
+//						return null;
+//					}
+//				});
+	         }
+	         return InteractionResult.CONSUME;
+	      }
+	}
+	
+	@Override
+	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		if (!pState.is(pNewState.getBlock())) {
+			BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+			if (blockentity instanceof EnderHopperBE hopper) {
+				hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, pState.getValue(FACING)).ifPresent(cap -> {
+					NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
+					for (int i = 0; i < cap.getSlots(); i++) {
+						stacks.set(i, cap.extractItem(i, cap.getStackInSlot(i).getCount(), false));
+					}
+					Containers.dropContents(pLevel, pPos, stacks);
+				});
+				pLevel.updateNeighbourForOutputSignal(pPos, this);
+			}
+			super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+		}
+	}
+	
+	@Override
 	public void onPlace(BlockState p_54110_, Level p_54111_, BlockPos p_54112_, BlockState p_54113_, boolean p_54114_) {
 		if (!p_54113_.is(p_54110_.getBlock())) {
 			this.checkPoweredState(p_54111_, p_54112_, p_54110_);
@@ -160,5 +215,13 @@ public class EnderHopper extends Block implements EntityBlock{
 	@Override
 	public boolean isPathfindable(BlockState p_54057_, BlockGetter p_54058_, BlockPos p_54059_, PathComputationType p_54060_) {
 		return false;
+	}
+	
+	@Override
+	public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
+		BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+		if (blockentity instanceof EnderHopperBE hopper) {
+			EnderHopperBE.entityInside(pLevel, pPos, pState, pEntity, hopper);
+		}
 	}
 }
