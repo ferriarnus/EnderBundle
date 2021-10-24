@@ -1,24 +1,35 @@
 package com.ferri.arnus.enderhopper.blockentities;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ferri.arnus.enderhopper.EnderHoppers;
 import com.ferri.arnus.enderhopper.blocks.EnderHopper;
+import com.ferri.arnus.enderhopper.capability.EnderStorageProvider;
 import com.ferri.arnus.enderhopper.capability.ExtractWrapper;
 import com.ferri.arnus.enderhopper.capability.InsertWrapper;
+import com.ferri.arnus.enderhopper.items.ItemRegistry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.Hopper;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -33,7 +44,9 @@ public class EnderHopperBE extends BlockEntity {
 	private HopperStackHandler handler = new HopperStackHandler();
 	private LazyOptional<IItemHandler> extract = LazyOptional.of(() -> new ExtractWrapper(handler));
 	private LazyOptional<IItemHandler> insert = LazyOptional.of(() -> new InsertWrapper(handler));
-	private UUID uuid = UUID.randomUUID();
+	private UUID uuid;
+	private Component name = TextComponent.EMPTY;
+	private boolean bound = false;
 	
 	public EnderHopperBE(BlockPos p_155550_, BlockState p_155551_) {
 		super(BlockEntityRegistry.ENDERHOPPER.get(), p_155550_, p_155551_);
@@ -45,6 +58,29 @@ public class EnderHopperBE extends BlockEntity {
 	
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
+	}
+	
+	public ItemStackHandler getHandler() {
+		return handler;
+	}
+	
+	public void setCustomName(Component hoverName) {
+		this.name = hoverName;
+	}
+	
+	public Component getName() {
+		if (this.name.getString().isEmpty()) {
+			return new TranslatableComponent("container.enderhopper.enderhopper");
+		}
+		return name;
+	}
+	
+	public void setBound(boolean bound) {
+		this.bound = bound;
+	}
+	
+	public boolean isBound() {
+		return bound;
 	}
 	
 	private VoxelShape getSuckShape() {
@@ -75,8 +111,11 @@ public class EnderHopperBE extends BlockEntity {
 		if (level.getGameTime() %7 == 3) {
 			pushItem(level, pos, state.getValue(EnderHopper.FACING), hopper);
 		}
-		if (level instanceof ServerLevel server) {
+		if (level instanceof ServerLevel server && hopper.isBound()) {
 			ForgeChunkManager.forceChunk(server, EnderHoppers.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, true, false);
+		}
+		if (level instanceof ServerLevel server && !hopper.isBound()) {
+			ForgeChunkManager.forceChunk(server, EnderHoppers.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, false, false);
 		}
 	}
 	
@@ -92,6 +131,25 @@ public class EnderHopperBE extends BlockEntity {
 				}
 			});
 		}
+	}
+	
+	public static boolean playerClose(Level level, BlockPos pos, EnderHopperBE hopper) {
+		List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(7, 7, 7), (p) -> {
+			ItemStack stack = p.getMainHandItem();
+			AtomicBoolean b = new AtomicBoolean(false);
+			if (stack.is(ItemRegistry.ENDER_BUNDEL.get())) {
+				stack.getCapability(EnderStorageProvider.ENDERSTORAGE).ifPresent(cap -> {
+					if (cap.getUUID().equals(hopper.getUuid())) {
+						b.set(true);
+					}
+				});
+			}
+			return b.get();
+		});
+		if (!players.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 	private static void pullItem(Level level, BlockPos pos, EnderHopperBE hopper) {
@@ -142,7 +200,7 @@ public class EnderHopperBE extends BlockEntity {
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (side.equals(Direction.UP) && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+		if (side.equals(Direction.UP) && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.getBlockState().getValue(EnderHopper.ENABLED)) {
 			return this.insert.cast();
 		}
 		if (this.getBlockState().getValue(EnderHopper.FACING).equals(side) && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.getBlockState().getValue(EnderHopper.ENABLED)) {
@@ -153,9 +211,15 @@ public class EnderHopperBE extends BlockEntity {
 	
 	@Override
 	public CompoundTag save(CompoundTag pTag) {
-		pTag.putUUID("stack", uuid);
+		super.save(pTag);
+		try {
+			pTag.putUUID("stack", uuid);
+		} catch (Exception e) {
+			pTag.putUUID("stack", UUID.randomUUID());
+		}
 		pTag.put("Storage", handler.serializeNBT());
-		return super.save(pTag);
+		pTag.putString("name", this.name.getString());
+		return pTag;
 	}
 	
 	@Override
@@ -163,12 +227,28 @@ public class EnderHopperBE extends BlockEntity {
 		try {
 			this.uuid = pTag.getUUID("stack");
 		} catch (Exception e) {
-			
+			this.uuid = UUID.randomUUID();
 		}
 		handler.deserializeNBT(pTag.getCompound("Storage"));
+		this.name = new TextComponent(pTag.getString("name"));
 		super.load(pTag);
 	}
 	
+	@Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(this.worldPosition, 0, this.getUpdateTag());
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return this.save(new CompoundTag());
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        this.load(pkt.getTag());
+    }
+    
 	class HopperStackHandler extends ItemStackHandler {
 		
 		public HopperStackHandler() {

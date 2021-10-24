@@ -14,7 +14,8 @@ public class EnderStorage implements IEnderStorage{
 	
 	private BlockPos pos = BlockPos.ZERO;
 	private String level = "";
-	private UUID uuid = UUID.randomUUID();
+	private UUID uuid;
+	private boolean empty = true;
 	
 	public EnderStorage() {
 	}
@@ -25,14 +26,20 @@ public class EnderStorage implements IEnderStorage{
 		nbt.put("pos", NbtUtils.writeBlockPos(pos));
 		nbt.putUUID("stack", uuid);
 		nbt.putString("dimension", level);
+		nbt.putBoolean("empty", empty);
 		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt) {
 		this.pos = NbtUtils.readBlockPos(nbt.getCompound("pos"));
-		this.uuid = nbt.getUUID("stack");
+		try {
+			this.uuid = nbt.getUUID("stack");
+		}catch (Exception e) {
+			
+		}
 		this.level = nbt.getString("dimension");
+		this.empty = nbt.getBoolean("empty");
 	}
 
 	@Override
@@ -47,7 +54,8 @@ public class EnderStorage implements IEnderStorage{
 
 	@Override
 	public Level getLevel(Level levelin) {
-		return levelin.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(level)));
+		Level l = levelin.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(level)));
+		return l == null? levelin.getServer().getLevel(Level.OVERWORLD) : l;
 	}
 
 	@Override
@@ -63,6 +71,16 @@ public class EnderStorage implements IEnderStorage{
 	@Override
 	public void setUUID(UUID uuid) {
 		this.uuid = uuid;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.empty;
+	}
+
+	@Override
+	public void setEmpty(boolean empty) {
+		this.empty = empty;
 	}
 
 }

@@ -19,5 +19,6 @@ private static final String PROTOCOL_VERSION = "1";
 	
 	public static void register() {
 		INSTANCE.registerMessage(0, EnderStackPacket.class, EnderStackPacket::encode, EnderStackPacket::decode, EnderStackPacket::handle);
+		INSTANCE.registerMessage(1, EnderEmptyPacket.class, EnderEmptyPacket::encode, EnderEmptyPacket::decode, EnderEmptyPacket::handle);
 	}
 }

@@ -1,9 +1,14 @@
 package com.ferri.arnus.enderhopper.items;
 
+import java.util.UUID;
+
 import com.ferri.arnus.enderhopper.blockentities.EnderHopperBE;
 import com.ferri.arnus.enderhopper.blocks.EnderHopper;
 import com.ferri.arnus.enderhopper.capability.EnderStorageProvider;
+import com.ferri.arnus.enderhopper.network.EnderHopperChannel;
+import com.ferri.arnus.enderhopper.network.EnderStackPacket;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,11 +23,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class EnderBundel extends Item{
+public class EnderBundle extends Item {
 
-	public EnderBundel() {
+	public EnderBundle() {
 		super(new Properties().stacksTo(1));
 	}
 	
@@ -31,14 +37,29 @@ public class EnderBundel extends Item{
 		BlockEntity be = pContext.getLevel().getBlockEntity(pContext.getClickedPos());
 		if (be instanceof EnderHopperBE hopper) {
 			pContext.getItemInHand().getCapability(EnderStorageProvider.ENDERSTORAGE).ifPresent(cap -> {
+				if (!pContext.getLevel().isClientSide && cap.getPosistion() != BlockPos.ZERO) {
+					BlockEntity old = cap.getLevel(pContext.getLevel()).getBlockEntity(cap.getPosistion());
+					if (old instanceof EnderHopperBE oldhopper) {
+						oldhopper.setBound(false);
+					}
+				}
 				cap.setLevel(pContext.getLevel());
 				cap.setPosistion(pContext.getClickedPos());
-				hopper.setUuid(cap.getUUID());
+				UUID randomUUID = UUID.randomUUID();
+				cap.setUUID(randomUUID);
+				hopper.setUuid(randomUUID);
+				hopper.setBound(true);
+				if (!pContext.getLevel().isClientSide) {
+					EnderHopperChannel.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> pContext.getLevel().getChunkAt(pContext.getClickedPos())), new EnderStackPacket(pContext.getClickedPos(), randomUUID));
+				}
+				if (pContext.getItemInHand().hasCustomHoverName()) {
+					hopper.setCustomName(pContext.getItemInHand().getHoverName());
+				}
 			});
 			return InteractionResult.SUCCESS;
 		}
 		return super.useOn(pContext);
-	}
+	}	
 	
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {

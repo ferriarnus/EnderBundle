@@ -16,5 +16,5 @@ public class ItemRegistry {
 		ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
-	public static final RegistryObject<Item> ENDERBUNDEL = ITEMS.register("enderbundel", EnderBundel::new);
+	public static final RegistryObject<Item> ENDER_BUNDEL = ITEMS.register("enderbundel", EnderBundle::new);
 }

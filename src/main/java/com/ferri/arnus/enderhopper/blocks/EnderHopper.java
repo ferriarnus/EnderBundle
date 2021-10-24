@@ -4,14 +4,20 @@ import javax.annotation.Nullable;
 
 import com.ferri.arnus.enderhopper.blockentities.BlockEntityRegistry;
 import com.ferri.arnus.enderhopper.blockentities.EnderHopperBE;
+import com.ferri.arnus.enderhopper.gui.EnderHopperContainer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -39,6 +45,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class EnderHopper extends Block implements EntityBlock{
@@ -126,27 +133,25 @@ public class EnderHopper extends Block implements EntityBlock{
 	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
 			BlockHitResult pHit) {
 		if (pLevel.isClientSide) {
-	         return InteractionResult.SUCCESS;
-	      } else {
-	         BlockEntity blockentity = pLevel.getBlockEntity(pPos);
-	         if (blockentity instanceof EnderHopperBE hopper) {
-//	            pPlayer.openMenu(new MenuProvider() {
-//					
-//					@Override
-//					public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
-//						// TODO Auto-generated method stub
-//						return null;
-//					}
-//					
-//					@Override
-//					public Component getDisplayName() {
-//						// TODO Auto-generated method stub
-//						return null;
-//					}
-//				});
-	         }
-	         return InteractionResult.CONSUME;
-	      }
+			return InteractionResult.SUCCESS;
+		} else {
+			BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+			if (blockentity instanceof EnderHopperBE hopper) {
+				MenuProvider p = new MenuProvider() {
+					@Override
+					public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
+						return new EnderHopperContainer(pContainerId, pLevel, pPos, pInventory);
+					}
+					
+					@Override
+					public Component getDisplayName() {
+						return hopper.getName();
+					}
+				};
+				NetworkHooks.openGui((ServerPlayer) pPlayer, p, blockentity.getBlockPos());
+			}
+			return InteractionResult.CONSUME;
+		}
 	}
 	
 	@Override
@@ -167,6 +172,15 @@ public class EnderHopper extends Block implements EntityBlock{
 		}
 	}
 	
+	public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, LivingEntity pPlacer, ItemStack pStack) {
+		if (pStack.hasCustomHoverName()) {
+			BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+			if (blockentity instanceof EnderHopperBE hopper) {
+				hopper.setCustomName(pStack.getHoverName());
+			}
+		}
+	}
+	
 	@Override
 	public void onPlace(BlockState p_54110_, Level p_54111_, BlockPos p_54112_, BlockState p_54113_, boolean p_54114_) {
 		if (!p_54113_.is(p_54110_.getBlock())) {
@@ -174,21 +188,26 @@ public class EnderHopper extends Block implements EntityBlock{
 		}
 	}
 	
-	private void checkPoweredState(Level p_54045_, BlockPos p_54046_, BlockState p_54047_) {
-		boolean flag = !p_54045_.hasNeighborSignal(p_54046_);
+	@Override
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+		this.checkPoweredState(pLevel, pPos, pState);
+	}
+	
+	private void checkPoweredState(Level level, BlockPos p_54046_, BlockState p_54047_) {
+		boolean flag = !level.hasNeighborSignal(p_54046_);
 		if (flag != p_54047_.getValue(ENABLED)) {
-			p_54045_.setBlock(p_54046_, p_54047_.setValue(ENABLED, Boolean.valueOf(flag)), 4);
+			level.setBlock(p_54046_, p_54047_.setValue(ENABLED, Boolean.valueOf(flag)), 4);
 		}
 		
 	}
 	
 	@Override
-	public RenderShape getRenderShape(BlockState p_54103_) {
+	public RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
 	}
 	
 	@Override
-	public boolean hasAnalogOutputSignal(BlockState p_54055_) {
+	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 	
@@ -203,8 +222,8 @@ public class EnderHopper extends Block implements EntityBlock{
 	}
 	
 	@Override
-	public BlockState mirror(BlockState p_54091_, Mirror p_54092_) {
-		return p_54091_.rotate(p_54092_.getRotation(p_54091_.getValue(FACING)));
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 	
 	@Override
@@ -213,7 +232,7 @@ public class EnderHopper extends Block implements EntityBlock{
 	}
 	
 	@Override
-	public boolean isPathfindable(BlockState p_54057_, BlockGetter p_54058_, BlockPos p_54059_, PathComputationType p_54060_) {
+	public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
 		return false;
 	}
 	

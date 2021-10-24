@@ -17,4 +17,7 @@ public interface IEnderStorage extends INBTSerializable<CompoundTag>{
 	
 	UUID getUUID();
 	void setUUID(UUID uuid);
+	
+	boolean isEmpty();
+	void setEmpty(boolean empty);
 }

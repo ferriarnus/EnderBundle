@@ -24,7 +24,7 @@ public class EnderStorageProvider implements ICapabilitySerializable<CompoundTag
 		if (cap == ENDERSTORAGE) {
 			return lazy.cast();
 		}
-		return null;
+		return LazyOptional.empty();
 	}
 
 	@Override
