@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+          {
+          "predicate": {
+                  "enderbundle:filled": 0
+                  },
+			 "model": "enderbundle:item/enderbundle_empty"
+          },
+          {
+          "predicate": {
+                  "enderbundle:filled": 1
+                  },
+			 "model": "enderbundle:item/enderbundle_filled"
+          }
+     ]
+}

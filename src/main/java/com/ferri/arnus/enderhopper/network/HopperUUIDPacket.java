@@ -9,12 +9,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
-public class EnderStackPacket {
+public class HopperUUIDPacket {
 	
 	private BlockPos pos;
 	private UUID uuid;
 	
-	public EnderStackPacket(BlockPos pos, UUID uuid) {
+	public HopperUUIDPacket(BlockPos pos, UUID uuid) {
 		this.pos = pos;
 		this.uuid = uuid;
 	}
@@ -32,13 +32,13 @@ public class EnderStackPacket {
 		buffer.writeUUID(uuid);
 	}
 	
-	public static EnderStackPacket decode(FriendlyByteBuf buffer) {
-		return new EnderStackPacket(buffer.readBlockPos(), buffer.readUUID());
+	public static HopperUUIDPacket decode(FriendlyByteBuf buffer) {
+		return new HopperUUIDPacket(buffer.readBlockPos(), buffer.readUUID());
 	}
 
-	static void handle(final EnderStackPacket message, Supplier<Context> ctx) {
+	static void handle(final HopperUUIDPacket message, Supplier<Context> ctx) {
 		ctx.get().enqueueWork(() ->
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> EnderStackHandler.handlePacket(message, ctx))
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> HopperUUIDHandler.handlePacket(message, ctx))
 				);
 		ctx.get().setPacketHandled(true);
 	}

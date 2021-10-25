@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.ferri.arnus.enderhopper.EnderHoppers;
+import com.ferri.arnus.enderhopper.EnderBundleMain;
 import com.ferri.arnus.enderhopper.blocks.EnderHopper;
 import com.ferri.arnus.enderhopper.capability.EnderStorageProvider;
-import com.ferri.arnus.enderhopper.capability.ExtractWrapper;
-import com.ferri.arnus.enderhopper.capability.InsertWrapper;
+import com.ferri.arnus.enderhopper.capability.wrapper.ExtractWrapper;
+import com.ferri.arnus.enderhopper.capability.wrapper.InsertWrapper;
 import com.ferri.arnus.enderhopper.items.ItemRegistry;
 
 import net.minecraft.core.BlockPos;
@@ -93,7 +93,7 @@ public class EnderHopperBE extends BlockEntity {
 		extract.invalidate();
 		insert.invalidate();
 		if (this.getLevel() instanceof ServerLevel server) {
-			ForgeChunkManager.forceChunk(server, EnderHoppers.MODID, this.getBlockPos(), level.getChunkAt(this.getBlockPos()).getPos().x, level.getChunkAt(this.getBlockPos()).getPos().z, false, false);
+			ForgeChunkManager.forceChunk(server, EnderBundleMain.MODID, this.getBlockPos(), level.getChunkAt(this.getBlockPos()).getPos().x, level.getChunkAt(this.getBlockPos()).getPos().z, false, false);
 		}
 	}
 	
@@ -112,10 +112,10 @@ public class EnderHopperBE extends BlockEntity {
 			pushItem(level, pos, state.getValue(EnderHopper.FACING), hopper);
 		}
 		if (level instanceof ServerLevel server && hopper.isBound()) {
-			ForgeChunkManager.forceChunk(server, EnderHoppers.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, true, false);
+			ForgeChunkManager.forceChunk(server, EnderBundleMain.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, true, false);
 		}
 		if (level instanceof ServerLevel server && !hopper.isBound()) {
-			ForgeChunkManager.forceChunk(server, EnderHoppers.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, false, false);
+			ForgeChunkManager.forceChunk(server, EnderBundleMain.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, false, false);
 		}
 	}
 	
@@ -137,7 +137,7 @@ public class EnderHopperBE extends BlockEntity {
 		List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(7, 7, 7), (p) -> {
 			ItemStack stack = p.getMainHandItem();
 			AtomicBoolean b = new AtomicBoolean(false);
-			if (stack.is(ItemRegistry.ENDER_BUNDEL.get())) {
+			if (stack.is(ItemRegistry.ENDER_BUNDLE.get())) {
 				stack.getCapability(EnderStorageProvider.ENDERSTORAGE).ifPresent(cap -> {
 					if (cap.getUUID().equals(hopper.getUuid())) {
 						b.set(true);

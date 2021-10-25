@@ -14,7 +14,7 @@ public class EnderStorage implements IEnderStorage{
 	
 	private BlockPos pos = BlockPos.ZERO;
 	private String level = "";
-	private UUID uuid;
+	private UUID uuid = UUID.randomUUID();
 	private boolean empty = true;
 	
 	public EnderStorage() {
@@ -35,7 +35,7 @@ public class EnderStorage implements IEnderStorage{
 		this.pos = NbtUtils.readBlockPos(nbt.getCompound("pos"));
 		try {
 			this.uuid = nbt.getUUID("stack");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			
 		}
 		this.level = nbt.getString("dimension");

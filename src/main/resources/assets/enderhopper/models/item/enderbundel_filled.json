@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "enderhopper:item/bundle_main",
-    "layer1": "enderhopper:item/bundle_cord"
-  }
-}

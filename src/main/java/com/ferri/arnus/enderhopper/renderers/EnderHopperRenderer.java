@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -42,8 +41,6 @@ public class EnderHopperRenderer implements BlockEntityRenderer<EnderHopperBE>{
 		double d5 = (double)(pRand.nextFloat() * (float)k);
 		level.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
 
-		//LevelRenderer.renderLineBox(pMatrixStack, pBuffer.getBuffer(RenderType.lines()), new AABB(pPos), 0.9F, 0.9F, 0.9F, 1.0F);
-		LevelRenderer.renderLineBox(pMatrixStack, pBuffer.getBuffer(RenderType.lines()),pPos.getX(), pPos.getY(), pPos.getZ(),pPos.getX()+1, pPos.getY()+1, pPos.getZ()+1, 0.9F, 0.9F, 0.9F, 1.0F, 0.5F, 0.5F, 0.5F);
 	}
 	
 	private void renderFace(EnderHopperBE p_173695_, Matrix4f p_173696_, VertexConsumer p_173697_, float p_173698_, float p_173699_, float p_173700_, float p_173701_, float p_173702_, float p_173703_, float p_173704_, float p_173705_) {

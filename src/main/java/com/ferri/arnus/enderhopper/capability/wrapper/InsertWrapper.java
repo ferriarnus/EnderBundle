@@ -1,13 +1,13 @@
-package com.ferri.arnus.enderhopper.capability;
+package com.ferri.arnus.enderhopper.capability.wrapper;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-public class ExtractWrapper implements IItemHandler{
+public class InsertWrapper implements IItemHandler{
 
 	private IItemHandler handler;
 	
-	public ExtractWrapper(IItemHandler handler) {
+	public InsertWrapper(IItemHandler handler) {
 		this.handler = handler;
 	}
 	
@@ -23,12 +23,12 @@ public class ExtractWrapper implements IItemHandler{
 
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		return stack;
+		return handler.insertItem(slot, stack, simulate);
 	}
 
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		return handler.extractItem(slot, amount, simulate);
+		return ItemStack.EMPTY;
 	}
 
 	@Override

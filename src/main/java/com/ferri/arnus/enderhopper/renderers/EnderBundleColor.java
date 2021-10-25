@@ -12,7 +12,7 @@ public class EnderBundleColor implements ItemColor{
 	@Override
 	public int getColor(ItemStack p_92672_, int p_92673_) {
 		if (p_92673_ == 1) {
-			AtomicInteger i = new AtomicInteger(0xffffff);
+			AtomicInteger i = new AtomicInteger(0x32CD30);
 			p_92672_.getCapability(DyeProvider.DYEABLE).ifPresent(cap -> {
 				i.set(cap.getColour());
 			});

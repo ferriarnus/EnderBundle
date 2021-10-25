@@ -1,9 +1,8 @@
 package com.ferri.arnus.enderhopper.blockentities;
 
-import com.ferri.arnus.enderhopper.EnderHoppers;
+import com.ferri.arnus.enderhopper.EnderBundleMain;
 import com.ferri.arnus.enderhopper.blocks.BlockRegistry;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
@@ -12,7 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockEntityRegistry {
 
-	public static final DeferredRegister<BlockEntityType<? extends BlockEntity>> BLOCKENTITYTYPE = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, EnderHoppers.MODID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTITYTYPE = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, EnderBundleMain.MODID);
 	
 	public static void register() {
 		BLOCKENTITYTYPE.register(FMLJavaModLoadingContext.get().getModEventBus());

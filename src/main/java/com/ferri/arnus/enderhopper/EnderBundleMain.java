@@ -7,7 +7,7 @@ import com.ferri.arnus.enderhopper.capability.EnderStorageProvider;
 import com.ferri.arnus.enderhopper.gui.ContainerRegistry;
 import com.ferri.arnus.enderhopper.gui.EnderHopperScreen;
 import com.ferri.arnus.enderhopper.items.ItemRegistry;
-import com.ferri.arnus.enderhopper.network.EnderHopperChannel;
+import com.ferri.arnus.enderhopper.network.EnderChannel;
 import com.ferri.arnus.enderhopper.renderers.EnderHopperRenderer;
 
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -20,18 +20,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod(EnderHoppers.MODID)
+@Mod(EnderBundleMain.MODID)
 @EventBusSubscriber
-public class EnderHoppers {
-	public static final String MODID = "enderhopper";
+public class EnderBundleMain {
+	public static final String MODID = "enderbundle";
 
-    public EnderHoppers() {
+    public EnderBundleMain() {
     	
     	BlockRegistry.register();
     	ItemRegistry.register();
     	BlockEntityRegistry.register();
     	ContainerRegistry.register();
-    	EnderHopperChannel.register();
+    	EnderChannel.register();
     	
 //    	final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 //		modEventBus.addListener(this::clientSetup);
@@ -44,7 +44,7 @@ public class EnderHoppers {
     
     @SubscribeEvent
     static void attachcaps(AttachCapabilitiesEvent<ItemStack> event) {
-    	if (event.getObject().is(ItemRegistry.ENDER_BUNDEL.get())) {
+    	if (event.getObject().is(ItemRegistry.ENDER_BUNDLE.get())) {
     		event.addCapability(new ResourceLocation(MODID, "enderhopper"), new EnderStorageProvider());
     		event.addCapability(new ResourceLocation(MODID, "dye"), new DyeProvider());
     	}

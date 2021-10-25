@@ -1,10 +1,11 @@
 package com.ferri.arnus.enderhopper.capability;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.DyeColor;
 
 public class Dyeable implements IDyeable{
 	
-	private int colour;
+	private int colour = DyeColor.LIME.getMaterialColor().col;
 
 	@Override
 	public CompoundTag serializeNBT() {

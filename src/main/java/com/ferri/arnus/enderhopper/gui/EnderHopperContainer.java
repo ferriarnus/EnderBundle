@@ -17,11 +17,18 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 public class EnderHopperContainer extends AbstractContainerMenu{
 	
 	public EnderHopperContainer(final int windowId, Inventory playerInventory, final FriendlyByteBuf data) {
-		this(windowId, playerInventory.player.level, data.readBlockPos(), playerInventory);
+		this(windowId, playerInventory.player.level, data.readBlockPos() ,playerInventory);
 	}
+	
 
 	public EnderHopperContainer(final int windowId, Level world, BlockPos pos, Inventory playerInventory) {
 		super(ContainerRegistry.ENDER_HOPPER.get(), windowId);
+//		if (!tag.isEmpty()) {
+//			EnderStorage s = new EnderStorage();
+//			s.deserializeNBT(tag);
+//			world = s.getLevel(world);
+//			pos = s.getPosistion();
+//		}
 		EnderHopperBE hopper = (EnderHopperBE) world.getBlockEntity(pos);
 		addSlot(new SlotItemHandler(hopper.getHandler(), 0, 44, 20));
 		addSlot(new SlotItemHandler(hopper.getHandler(), 1, 62, 20));
