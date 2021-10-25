@@ -44,7 +44,7 @@ public class EnderHopperBE extends BlockEntity {
 	private HopperStackHandler handler = new HopperStackHandler();
 	private LazyOptional<IItemHandler> extract = LazyOptional.of(() -> new ExtractWrapper(handler));
 	private LazyOptional<IItemHandler> insert = LazyOptional.of(() -> new InsertWrapper(handler));
-	private UUID uuid;
+	private UUID uuid = UUID.randomUUID();
 	private Component name = TextComponent.EMPTY;
 	private boolean bound = false;
 	
