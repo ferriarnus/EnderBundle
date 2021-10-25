@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -46,7 +47,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class EnderHopper extends Block implements EntityBlock{
 	public static final DirectionProperty FACING = BlockStateProperties.FACING_HOPPER;
@@ -68,7 +69,7 @@ public class EnderHopper extends Block implements EntityBlock{
 	
 	
 	public EnderHopper() {
-		super(Properties.of(Material.HEAVY_METAL));
+		super(Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.0F, 6.0F));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(ENABLED, Boolean.valueOf(true)));
 	}
 	
@@ -159,13 +160,12 @@ public class EnderHopper extends Block implements EntityBlock{
 		if (!pState.is(pNewState.getBlock())) {
 			BlockEntity blockentity = pLevel.getBlockEntity(pPos);
 			if (blockentity instanceof EnderHopperBE hopper) {
-				hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, pState.getValue(FACING)).ifPresent(cap -> {
-					NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
-					for (int i = 0; i < cap.getSlots(); i++) {
-						stacks.set(i, cap.extractItem(i, cap.getStackInSlot(i).getCount(), false));
-					}
-					Containers.dropContents(pLevel, pPos, stacks);
-				});
+				IItemHandler cap = hopper.getHandler();
+				NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
+				for (int i = 0; i < cap.getSlots(); i++) {
+					stacks.set(i, cap.extractItem(i, cap.getStackInSlot(i).getCount(), false));
+				}
+				Containers.dropContents(pLevel, pPos, stacks);
 				pLevel.updateNeighbourForOutputSignal(pPos, this);
 			}
 			super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -213,7 +213,7 @@ public class EnderHopper extends Block implements EntityBlock{
 	
 	@Override
 	public int getAnalogOutputSignal(BlockState p_54062_, Level p_54063_, BlockPos p_54064_) {
-		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(p_54063_.getBlockEntity(p_54064_));
+		return EnderHopperBE.getRedstoneSignalFromBlockEntity(p_54063_, p_54064_);
 	}
 	
 	@Override

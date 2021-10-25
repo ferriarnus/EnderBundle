@@ -21,7 +21,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -105,10 +107,10 @@ public class EnderHopperBE extends BlockEntity {
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, EnderHopperBE hopper) {
-		if (level.getGameTime() %7 == 0) {
+		if (level.getGameTime() %3 == 0) {
 			pullItem(level, pos, hopper);
 		}
-		if (level.getGameTime() %7 == 3) {
+		if (level.getGameTime() %3 == 2) {
 			pushItem(level, pos, state.getValue(EnderHopper.FACING), hopper);
 		}
 		if (level instanceof ServerLevel server && hopper.isBound()) {
@@ -155,8 +157,22 @@ public class EnderHopperBE extends BlockEntity {
 	private static void pullItem(Level level, BlockPos pos, EnderHopperBE hopper) {
 		level.updateNeighborsAt(pos.above(), level.getBlockState(pos.above()).getBlock());
 		BlockEntity be =  level.getBlockEntity(pos.above());
-		if (be == null) { return;}
-		be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(behandler -> {
+		LazyOptional<IItemHandler> h = LazyOptional.empty() ;
+		if (be == null) {
+			List<Entity> list = level.getEntities((Entity)null, new AABB(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, pos.getX() + 1.5D, pos.getY() + 1.5D, pos.getZ() + 1.5D), (e) -> {
+				return e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).isPresent();
+			});
+			if (!list.isEmpty()) {
+				Entity entity = list.get(level.random.nextInt(list.size()));
+				if (entity instanceof LivingEntity) {
+					return;
+				}
+				h = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+			}
+		}else {
+			h = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+		}
+		h.ifPresent(behandler -> {
 			hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(hopperhandler -> {
 				for (int i=0; i< behandler.getSlots(); i++) {
 					ItemStack extractItem = behandler.extractItem(i, 1, true);
@@ -178,9 +194,23 @@ public class EnderHopperBE extends BlockEntity {
 	private static void pushItem(Level level, BlockPos pos, Direction side, EnderHopperBE hopper) {
 		level.updateNeighborsAt(pos.relative(side), level.getBlockState(pos.relative(side)).getBlock());
 		BlockEntity be =  level.getBlockEntity(pos.relative(side));
-		if (be == null) { return;}
-		hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).ifPresent(hopperhandler -> {
-			be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(behandler -> {
+		LazyOptional<IItemHandler> h = LazyOptional.empty() ;
+		if (be == null) {
+			List<Entity> list = level.getEntities((Entity)null, new AABB(pos.getX() - 0.5D, pos.getY() - 0.5D, pos.getZ() - 0.5D, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D), (e) -> {
+				return e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
+			});
+			if (!list.isEmpty()) {
+				Entity entity = list.get(level.random.nextInt(list.size()));
+				if (entity instanceof LivingEntity) {
+					return;
+				}
+				h = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+			}
+		}else {
+			h = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+		}
+		h.ifPresent(behandler -> {
+			hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).ifPresent(hopperhandler -> {
 				for (int i=0; i< hopperhandler.getSlots(); i++) {
 					ItemStack extractItem = hopperhandler.extractItem(i, 1, true);
 					if (extractItem != ItemStack.EMPTY) {
@@ -196,6 +226,26 @@ public class EnderHopperBE extends BlockEntity {
 				}
 			});
 		});
+	}
+	
+	public static int getRedstoneSignalFromBlockEntity(Level level, BlockPos pos) {
+		BlockEntity be = level.getBlockEntity(pos);
+		if (be instanceof EnderHopperBE hopper) {
+			int i = 0;
+			float f = 0.0F;
+			
+			for(int j = 0; j < hopper.handler.getSlots(); ++j) {
+				ItemStack itemstack = hopper.handler.getStackInSlot(j);
+				if (!itemstack.isEmpty()) {
+					f += (float)itemstack.getCount() / (float)Math.min(hopper.handler.getSlotLimit(j), itemstack.getMaxStackSize());
+					++i;
+				}
+			}
+			
+			f = f / (float)hopper.handler.getSlots();
+			return Mth.floor(f * 14.0F) + (i > 0 ? 1 : 0);
+		}
+		return 0;
 	}
 	
 	@Override

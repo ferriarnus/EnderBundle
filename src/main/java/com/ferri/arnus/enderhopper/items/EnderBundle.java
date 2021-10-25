@@ -70,6 +70,16 @@ public class EnderBundle extends Item {
 	}	
 	
 	@Override
+	public boolean isEnchantable(ItemStack pStack) {
+		return false;
+	}
+	
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+		return false;
+	}
+	
+	@Override
 	public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
 		pPlayer.getItemInHand(pUsedHand).getCapability(EnderStorageProvider.ENDERSTORAGE).ifPresent(cap -> {
 			if (pLevel.getServer() == null) {return; }

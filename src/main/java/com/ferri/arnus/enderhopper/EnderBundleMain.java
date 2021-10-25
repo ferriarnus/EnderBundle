@@ -32,10 +32,6 @@ public class EnderBundleMain {
     	BlockEntityRegistry.register();
     	ContainerRegistry.register();
     	EnderChannel.register();
-    	
-//    	final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-//		modEventBus.addListener(this::clientSetup);
-//		modEventBus.addListener(this::registerBERS);
     }
     
     public void clientSetup(FMLClientSetupEvent event) {
@@ -51,7 +47,6 @@ public class EnderBundleMain {
     }
     
     public void registerBERS(EntityRenderersEvent.RegisterRenderers event) {
-    	System.out.println("hzy");
         event.registerBlockEntityRenderer(BlockEntityRegistry.ENDERHOPPER.get(), EnderHopperRenderer::new);
     }
     
