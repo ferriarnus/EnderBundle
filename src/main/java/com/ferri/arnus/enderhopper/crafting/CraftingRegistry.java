@@ -14,7 +14,7 @@ public class CraftingRegistry {
 
 	@SubscribeEvent
 	public static void registerSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-		event.getRegistry().register(name(DyeRecipe.SERIALIZER, "dyeing"));
+		event.getRegistry().register(name(Dyeing.SERIALIZER, "dyeing"));
 	}
 	
 	private static <T extends IForgeRegistryEntry<? extends T>> T name(T entry, String name) {

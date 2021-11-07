@@ -1,0 +1,14 @@
+{
+  "type": "enderbundle:dyeing",
+  "ingredients": [
+    {
+      "item": "enderbundle:enderbundle"
+    },
+    {
+      "tag": "forge:dyes/magenta"
+    }
+  ],
+  "result": {
+    "item": "enderbundle:enderbundle"
+  }
+}

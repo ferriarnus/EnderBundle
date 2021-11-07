@@ -1,0 +1,14 @@
+{
+  "type": "enderbundle:dyeing",
+  "ingredients": [
+    {
+      "item": "enderbundle:enderbundle"
+    },
+    {
+      "tag": "forge:dyes/red"
+    }
+  ],
+  "result": {
+    "item": "enderbundle:enderbundle"
+  }
+}
