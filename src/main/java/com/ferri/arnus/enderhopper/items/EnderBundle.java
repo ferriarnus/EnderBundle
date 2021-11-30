@@ -31,8 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 public class EnderBundle extends Item {
 
@@ -104,7 +104,7 @@ public class EnderBundle extends Item {
 	}
 	
 	@Override
-	public int getRGBDurabilityForDisplay(ItemStack stack) {
+	public int getBarColor(ItemStack p_150901_) {
 		return Mth.color(0.4F, 0.4F, 1.0F);
 	}
 	

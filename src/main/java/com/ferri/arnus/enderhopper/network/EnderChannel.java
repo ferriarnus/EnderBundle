@@ -3,8 +3,8 @@ package com.ferri.arnus.enderhopper.network;
 import com.ferri.arnus.enderhopper.EnderBundleMain;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class EnderChannel {
 
