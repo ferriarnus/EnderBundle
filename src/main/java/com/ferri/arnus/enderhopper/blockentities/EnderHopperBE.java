@@ -126,8 +126,12 @@ public class EnderHopperBE extends BlockEntity {
 			pBlockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(cap -> {
 				for (int i=0; i< cap.getSlots(); i++) {
 					if (!ItemStack.matches(item.getItem(), cap.insertItem(i, item.getItem(), true))) {
-						cap.insertItem(i,item.getItem().copy() ,false);
-						item.discard();
+						ItemStack s = cap.insertItem(i,item.getItem().copy() ,false);
+						if (s.isEmpty()) {
+							item.discard();
+						} else {
+							item.getItem().shrink(s.getCount());
+						}
 						break;
 					}
 				}
@@ -259,9 +263,10 @@ public class EnderHopperBE extends BlockEntity {
 		return super.getCapability(cap, side);
 	}
 	
+	
 	@Override
-	public CompoundTag save(CompoundTag pTag) {
-		super.save(pTag);
+	protected void saveAdditional(CompoundTag pTag) {
+		super.saveAdditional(pTag);
 		try {
 			pTag.putUUID("stack", uuid);
 		} catch (Exception e) {
@@ -269,7 +274,6 @@ public class EnderHopperBE extends BlockEntity {
 		}
 		pTag.put("Storage", handler.serializeNBT());
 		pTag.putString("name", this.name.getString());
-		return pTag;
 	}
 	
 	@Override
@@ -291,7 +295,7 @@ public class EnderHopperBE extends BlockEntity {
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.save(new CompoundTag());
+        return this.saveWithFullMetadata();
     }
 
     @Override
