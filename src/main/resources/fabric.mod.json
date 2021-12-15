@@ -4,13 +4,13 @@
   "version": "${version}",
 
   "name": "Ender Bundle",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "An Ender Bundle for inventory mangement",
   "authors": [
-    "Me!"
+    "Ferri Arnus"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "",
+    "sources": ""
   },
 
   "license": "CC0-1.0",
@@ -20,6 +20,14 @@
   "entrypoints": {
     "main": [
       "com.ferri.arnus.enderbundle.EnderBundleMain"
+    ],
+    "client": [
+      {
+        "value": "com.ferri.arnus.enderbundle.ClientEnderBundleMain"
+      }
+    ],
+    "cardinal-components-item": [
+      "com.ferri.arnus.enderbundle.components.MyComponents"
     ]
   },
   "mixins": [
@@ -37,7 +45,8 @@
   },
   "custom": {
         "cardinal-components": [
-            "enderbundle:enderstorage"
+            "enderbundle:enderstorage",
+            "enderbundle:color"
         ]
     }
 }

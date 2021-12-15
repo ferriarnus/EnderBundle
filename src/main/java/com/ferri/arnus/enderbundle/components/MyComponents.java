@@ -11,10 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class MyComponents implements ItemComponentInitializer {
 	public static final ComponentKey<EnderStorageComponent> ENDERSTORAGE = ComponentRegistry.getOrCreate(new ResourceLocation(EnderBundleMain.MODID, "enderstorage"), EnderStorageComponent.class);
+	public static final ComponentKey<ColorComponent> COLOR = ComponentRegistry.getOrCreate(new ResourceLocation(EnderBundleMain.MODID, "color"), ColorComponent.class);
 	
 	@Override
 	public void registerItemComponentFactories(ItemComponentFactoryRegistry registry) {
 		registry.register(ItemRegistry.ENDERBUNDLE, ENDERSTORAGE, EnderStorageComponent::new);
+		registry.register(ItemRegistry.ENDERBUNDLE, COLOR, ColorComponent::new);
+
 	}
 	
 }

@@ -6,6 +6,7 @@ import dev.onyxstudios.cca.api.v3.item.ItemComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,9 @@ public class EnderStorageComponent extends ItemComponent {
 	}
 
 	public BlockPos getPosistion() {
+		if(!hasTag("pos", Tag.TAG_COMPOUND)) {
+			putCompound("pos", NbtUtils.writeBlockPos(BlockPos.ZERO));
+		}
 		return NbtUtils.readBlockPos(getCompound("pos"));
 	}
 
@@ -35,7 +39,10 @@ public class EnderStorageComponent extends ItemComponent {
 	}
 
 	public UUID getUUID() {
-		return getUuid("uuid");
+		if(!hasTag("uuid")) {
+			putUuid("uuid", UUID.randomUUID());
+		}
+		return getUuid("uuid") == null? UUID.randomUUID() : getUuid("uuid");
 	}
 
 	public void setUUID(UUID uuid) {
@@ -43,6 +50,9 @@ public class EnderStorageComponent extends ItemComponent {
 	}
 
 	public boolean isEmpty() {
+		if(! hasTag("empty")) {
+			putBoolean("empty", true);
+		}
 		return getBoolean("empty");
 	}
 
