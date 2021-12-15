@@ -10,7 +10,7 @@ import net.minecraft.world.item.CreativeModeTab;
 
 public class ItemRegistry {
 	
-	public static final EnderBundle ENDERBUNDLE = new EnderBundle(new FabricItemSettings().group(CreativeModeTab.TAB_MISC));
+	public static final EnderBundle ENDERBUNDLE = new EnderBundle(new FabricItemSettings().group(CreativeModeTab.TAB_MISC).stacksTo(1));
 	
 	public static void register() {
 		Registry.register(Registry.ITEM, new ResourceLocation(EnderBundleMain.MODID, "enderbundle"), ENDERBUNDLE);

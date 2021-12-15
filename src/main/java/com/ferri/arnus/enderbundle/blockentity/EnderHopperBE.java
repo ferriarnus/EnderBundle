@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.ferri.arnus.enderbundle.EnderBundleMain;
-import com.ferri.arnus.enderbundle.components.MyComponents;
 import com.ferri.arnus.enderbundle.item.ItemRegistry;
+import com.ferri.arnus.enderbundle.storage.EnderStorage;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -50,7 +50,7 @@ public class EnderHopperBE extends HopperBlockEntity{
 		List<Player> players = level.getEntitiesOfClass(Player.class, new AABB(pos).inflate(7, 7, 7), (p) -> {
 			ItemStack stack = p.getMainHandItem();
 			if (stack.is(ItemRegistry.ENDERBUNDLE)) {
-				return MyComponents.ENDERSTORAGE.get(stack).getUUID().equals(hopper.uuid);
+				return new EnderStorage(stack).getUUID().equals(hopper.uuid);
 			}
 			return false;
 		});
