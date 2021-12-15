@@ -1,5 +1,7 @@
 package com.ferri.arnus.enderbundle;
 
+import com.ferri.arnus.enderbundle.block.BlockRegistry;
+import com.ferri.arnus.enderbundle.blockentity.BlockEntityRegistry;
 import com.ferri.arnus.enderbundle.item.ItemRegistry;
 
 import net.fabricmc.api.ModInitializer;
@@ -12,7 +14,9 @@ public class EnderBundleMain implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		BlockRegistry.register();
 		ItemRegistry.register();
+		BlockEntityRegistry.register();
 
 	}
 }
