@@ -1,5 +1,6 @@
 package com.ferri.arnus.enderbundle.item;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.ferri.arnus.enderbundle.EnderBundleMain;
@@ -17,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -95,6 +98,28 @@ public class EnderBundle extends Item{
 	@Override
 	public int getBarColor(ItemStack p_150901_) {
 		return Mth.color(0.4F, 0.4F, 1.0F);
+	}
+	
+	@Override
+	public boolean isBarVisible(ItemStack itemStack) {
+		return !new EnderStorage(itemStack).isEmpty();
+	}
+	
+	@Override
+	public int getBarWidth(ItemStack itemStack) {
+		if (!itemStack.getOrCreateTagElement("enderitems").contains("damage")) {
+			return 0;
+		}
+		return itemStack.getOrCreateTagElement("enderitems").getInt("damage");
+	}
+	
+	@Override
+	public Optional<TooltipComponent> getTooltipImage(ItemStack itemStack) {
+		NonNullList<ItemStack> nonNullList = NonNullList.withSize(5, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(itemStack.getOrCreateTagElement("enderitems").getCompound("items"), nonNullList);
+        System.out.println(itemStack.getOrCreateTag());
+        System.out.println(nonNullList);
+        return Optional.of(new EnderBundleToolTip(nonNullList));
 	}
 	
 	@Override
@@ -224,5 +249,4 @@ public class EnderBundle extends Item{
 		}
 		return true;
 	}
-
 }
