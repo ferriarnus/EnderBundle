@@ -1,0 +1,14 @@
+{
+  "type": "enderbundle:dyeing",
+  "ingredients": [
+    {
+      "item": "enderbundle:enderbundle"
+    },
+    {
+      "tag": "c:black_dyes"
+    }
+  ],
+  "result": {
+    "item": "enderbundle:enderbundle"
+  }
+}

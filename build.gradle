@@ -17,10 +17,7 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	
-	maven {
-        name = 'Ladysnake Mods'
-        url = 'https://ladysnake.jfrog.io/artifactory/mods'
-    }
+	maven { url "https://maven.shedaniel.me" }
 }
 
 dependencies {
@@ -35,9 +32,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.0.1"
-    //modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-util:4.0.1"
-    modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-item:4.0.1"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:7.1.356"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:7.1.356"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:7.1.356"
 }
 
 processResources {

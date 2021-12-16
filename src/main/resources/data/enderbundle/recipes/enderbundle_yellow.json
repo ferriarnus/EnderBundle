@@ -1,0 +1,14 @@
+{
+  "type": "enderbundle:dyeing",
+  "ingredients": [
+    {
+      "item": "enderbundle:enderbundle"
+    },
+    {
+      "tag": "c:yellow_dyes"
+    }
+  ],
+  "result": {
+    "item": "enderbundle:enderbundle"
+  }
+}

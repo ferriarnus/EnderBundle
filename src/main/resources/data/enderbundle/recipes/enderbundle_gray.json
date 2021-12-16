@@ -1,0 +1,14 @@
+{
+  "type": "enderbundle:dyeing",
+  "ingredients": [
+    {
+      "item": "enderbundle:enderbundle"
+    },
+    {
+      "tag": "c:gray_dyes"
+    }
+  ],
+  "result": {
+    "item": "enderbundle:enderbundle"
+  }
+}

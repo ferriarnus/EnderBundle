@@ -3,15 +3,18 @@ package com.ferri.arnus.enderbundle;
 import com.ferri.arnus.enderbundle.block.BlockRegistry;
 import com.ferri.arnus.enderbundle.blockentity.BlockEntityRegistry;
 import com.ferri.arnus.enderbundle.blockentity.EnderHopperBE;
+import com.ferri.arnus.enderbundle.crafting.RecipeRegistry;
 import com.ferri.arnus.enderbundle.item.ItemRegistry;
 import com.ferri.arnus.enderbundle.storage.EnderStorage;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -20,12 +23,14 @@ public class EnderBundleMain implements ModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final String MODID = "enderbundle";
+	public static CreativeModeTab ENDERBUNDLETAB = FabricItemGroupBuilder.build(new ResourceLocation(EnderBundleMain.MODID, "enderbundle"), () -> new ItemStack(ItemRegistry.ENDERBUNDLE));
 
 	@Override
 	public void onInitialize() {
 		BlockRegistry.register();
 		ItemRegistry.register();
 		BlockEntityRegistry.register();
+		RecipeRegistry.register();
 		
 		ServerPlayNetworking.registerGlobalReceiver(new ResourceLocation(MODID, "items"), (server, player, handler, buf, responseSender) -> {
 			if (player.level.isClientSide) {

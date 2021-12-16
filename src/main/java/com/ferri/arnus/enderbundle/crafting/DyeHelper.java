@@ -74,7 +74,7 @@ public class DyeHelper {
 		if (YELLOW.contains(item)) {
 			return DyeColor.YELLOW.getMaterialColor().col;
 		}
-		return 0;
+		return -1;
 	}
 
 }

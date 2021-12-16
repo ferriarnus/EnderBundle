@@ -117,14 +117,12 @@ public class EnderBundle extends Item{
 	public Optional<TooltipComponent> getTooltipImage(ItemStack itemStack) {
 		NonNullList<ItemStack> nonNullList = NonNullList.withSize(5, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(itemStack.getOrCreateTagElement("enderitems").getCompound("items"), nonNullList);
-        System.out.println(itemStack.getOrCreateTag());
-        System.out.println(nonNullList);
         return Optional.of(new EnderBundleToolTip(nonNullList));
 	}
 	
 	@Override
 	public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
-		if (!allowdedIn(category)) {
+		if (category != EnderBundleMain.ENDERBUNDLETAB) {
 			return;
 		}
 		for (DyeColor c : DyeColor.values()) {

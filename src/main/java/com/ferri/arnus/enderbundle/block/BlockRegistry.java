@@ -14,7 +14,7 @@ public class BlockRegistry {
 	
 	public static void register() {
 		Registry.register(Registry.BLOCK, new ResourceLocation(EnderBundleMain.MODID, "enderhopper"), ENDERHOPPER);
-		Registry.register(Registry.ITEM, new ResourceLocation(EnderBundleMain.MODID, "enderhopper"), new BlockItem(ENDERHOPPER, new net.minecraft.world.item.Item.Properties()));
+		Registry.register(Registry.ITEM, new ResourceLocation(EnderBundleMain.MODID, "enderhopper"), new BlockItem(ENDERHOPPER, new net.minecraft.world.item.Item.Properties().tab(EnderBundleMain.ENDERBUNDLETAB)));
 
 	}
 }
