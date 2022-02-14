@@ -122,13 +122,12 @@ public class EnderBundle extends Item{
 	
 	@Override
 	public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
-		if (category != EnderBundleMain.ENDERBUNDLETAB) {
-			return;
-		}
-		for (DyeColor c : DyeColor.values()) {
-			ItemStack stack = new ItemStack(this);
-			new ColorStorage(stack).setColor(c.getMaterialColor().col);
-			pItems.add(stack);
+		if (allowdedIn(pCategory)) {
+			for (DyeColor c : DyeColor.values()) {
+				ItemStack stack = new ItemStack(this);
+				new ColorStorage(stack).setColor(c.getMaterialColor().col);
+				pItems.add(stack);
+			}
 		}
 	}
 	

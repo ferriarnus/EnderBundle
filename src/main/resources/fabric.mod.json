@@ -25,9 +25,6 @@
       {
         "value": "com.ferri.arnus.enderbundle.ClientEnderBundleMain"
       }
-    ],
-    "cardinal-components-item": [
-      "com.ferri.arnus.enderbundle.components.MyComponents"
     ]
   },
   "mixins": [
@@ -44,9 +41,6 @@
     "another-mod": "*"
   },
   "custom": {
-        "cardinal-components": [
-            "enderbundle:enderstorage",
-            "enderbundle:color"
-        ]
+        
     }
 }
