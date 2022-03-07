@@ -1,77 +1,77 @@
 package com.ferri.arnus.enderbundle.crafting;
 
-import net.fabricmc.fabric.api.tag.TagFactory;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class DyeHelper {
+	public static final TagKey<Item> RED = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "red_dyes"));
+	public static final TagKey<Item> BLUE = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "blue_dyes"));
+	public static final TagKey<Item> BLACK = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "black_dyes"));
+	public static final TagKey<Item> BROWN = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "brown_dyes"));
+	public static final TagKey<Item> CYAN = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "cyan_dyes"));
+	public static final TagKey<Item> GRAY = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "gray_dyes"));
+	public static final TagKey<Item> GREEN = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "green_dyes"));
+	public static final TagKey<Item> LIGHT_BLUE = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "light_blue_dyes"));
+	public static final TagKey<Item> LIGHT_GRAY = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "light_grey_dyes"));
+	public static final TagKey<Item> LIME = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "lime_dyes"));
+	public static final TagKey<Item> MAGENTA = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "magenta_dyes"));
+	public static final TagKey<Item> ORANGE = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "orange_dyes"));
+	public static final TagKey<Item> PINK = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "pink_dyes"));
+	public static final TagKey<Item> PURPLE = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "purple_dyes"));
+	public static final TagKey<Item> WHITE = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "white_dyes"));
+	public static final TagKey<Item> YELLOW = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation("c", "yellow_dyes"));
 	
-	public static final Tag<Item> RED = TagFactory.ITEM.create(new ResourceLocation("c", "red_dyes"));
-	public static final Tag<Item> BLUE = TagFactory.ITEM.create(new ResourceLocation("c", "blue_dyes"));
-	public static final Tag<Item> BLACK = TagFactory.ITEM.create(new ResourceLocation("c", "black_dyes"));
-	public static final Tag<Item> BROWN = TagFactory.ITEM.create(new ResourceLocation("c", "brown_dyes"));
-	public static final Tag<Item> CYAN = TagFactory.ITEM.create(new ResourceLocation("c", "cyan_dyes"));
-	public static final Tag<Item> GRAY = TagFactory.ITEM.create(new ResourceLocation("c", "gray_dyes"));
-	public static final Tag<Item> GREEN = TagFactory.ITEM.create(new ResourceLocation("c", "green_dyes"));
-	public static final Tag<Item> LIGHT_BLUE = TagFactory.ITEM.create(new ResourceLocation("c", "light_blue_dyes"));
-	public static final Tag<Item> LIGHT_GRAY = TagFactory.ITEM.create(new ResourceLocation("c", "light_grey_dyes"));
-	public static final Tag<Item> LIME = TagFactory.ITEM.create(new ResourceLocation("c", "lime_dyes"));
-	public static final Tag<Item> MAGENTA = TagFactory.ITEM.create(new ResourceLocation("c", "magenta_dyes"));
-	public static final Tag<Item> ORANGE = TagFactory.ITEM.create(new ResourceLocation("c", "orange_dyes"));
-	public static final Tag<Item> PINK = TagFactory.ITEM.create(new ResourceLocation("c", "pink_dyes"));
-	public static final Tag<Item> PURPLE = TagFactory.ITEM.create(new ResourceLocation("c", "purple_dyes"));
-	public static final Tag<Item> WHITE = TagFactory.ITEM.create(new ResourceLocation("c", "white_dyes"));
-	public static final Tag<Item> YELLOW = TagFactory.ITEM.create(new ResourceLocation("c", "yellow_dyes"));
-	
-	static int getColor(Item item) {
-		if (RED.contains(item)) {
+	static int getColor(ItemStack item) {
+		if (item.is(RED)) {
 			return DyeColor.RED.getMaterialColor().col;
 		}
-		if (BLUE.contains(item)) {
+		if (item.is(BLUE)) {
 			return DyeColor.BLUE.getMaterialColor().col;
 		}
-		if (BLACK.contains(item)) {
+		if (item.is(BLACK)) {
 			return DyeColor.BLACK.getMaterialColor().col;
 		}
-		if (BROWN.contains(item)) {
+		if (item.is(BROWN)) {
 			return DyeColor.BROWN.getMaterialColor().col;
 		}
-		if (CYAN.contains(item)) {
+		if (item.is(CYAN)) {
 			return DyeColor.CYAN.getMaterialColor().col;
 		}
-		if (GRAY.contains(item)) {
+		if (item.is(GRAY)) {
 			return DyeColor.GRAY.getMaterialColor().col;
 		}
-		if (GREEN.contains(item)) {
+		if (item.is(GREEN)) {
 			return DyeColor.GREEN.getMaterialColor().col;
 		}
-		if (LIGHT_BLUE.contains(item)) {
+		if (item.is(LIGHT_BLUE)) {
 			return DyeColor.LIGHT_BLUE.getMaterialColor().col;
 		}
-		if (LIGHT_GRAY.contains(item)) {
+		if (item.is(LIGHT_GRAY)) {
 			return DyeColor.LIGHT_GRAY.getMaterialColor().col;
 		}
-		if (LIME.contains(item)) {
+		if (item.is(LIME)) {
 			return DyeColor.LIME.getMaterialColor().col;
 		}
-		if (MAGENTA.contains(item)) {
+		if (item.is(MAGENTA)) {
 			return DyeColor.MAGENTA.getMaterialColor().col;
 		}
-		if (ORANGE.contains(item)) {
+		if (item.is(ORANGE)) {
 			return DyeColor.ORANGE.getMaterialColor().col;
 		}
-		if (PINK.contains(item)) {
+		if (item.is(PINK)) {
 			return DyeColor.PINK.getMaterialColor().col;
 		}
-		if (PURPLE.contains(item)) {
+		if (item.is(PURPLE)) {
 			return DyeColor.PURPLE.getMaterialColor().col;
 		}
-		if (WHITE.contains(item)) {
+		if (item.is(WHITE)) {
 			return DyeColor.WHITE.getMaterialColor().col;
 		}
-		if (YELLOW.contains(item)) {
+		if (item.is(YELLOW)) {
 			return DyeColor.YELLOW.getMaterialColor().col;
 		}
 		return -1;

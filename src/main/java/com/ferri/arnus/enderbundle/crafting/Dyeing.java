@@ -34,13 +34,13 @@ public class Dyeing extends ShapelessRecipe{
 			if (pInv.getItem(i).is(ItemRegistry.ENDERBUNDLE)) {
 				stack = pInv.getItem(i);
 			}
-			if (DyeHelper.getColor(pInv.getItem(i).getItem()) != -1) {
+			if (DyeHelper.getColor(pInv.getItem(i)) != -1) {
 				dye =  pInv.getItem(i);
 			}
 		}
 		final ItemStack dye2 = dye.copy();
 		ItemStack result = stack.copy();
-		new ColorStorage(result).setColor(DyeHelper.getColor(dye2.getItem()));
+		new ColorStorage(result).setColor(DyeHelper.getColor(dye2));
 		return result;
 	}
 	
@@ -49,7 +49,7 @@ public class Dyeing extends ShapelessRecipe{
 		ItemStack item = getIngredients().get(0).getItems()[0];
 		ItemStack dye = getIngredients().get(1).getItems()[0];
 		ItemStack result = item.copy();
-		new ColorStorage(result).setColor(DyeHelper.getColor(dye.getItem()));
+		new ColorStorage(result).setColor(DyeHelper.getColor(dye));
 		return result;
 	}
 	
