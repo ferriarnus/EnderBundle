@@ -1,4 +1,5 @@
-[![DOWNLOAD](https://cf.way2muchnoise.eu/541224.svg)]
+![DOWNLOAD](https://cf.way2muchnoise.eu/541224.svg)
+
 IMPORTANT: The creative menu is completely client side, making it not work inside this inventory. Use it in any other inventory and it works. !!!
 
 #Ender Bundle
