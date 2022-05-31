@@ -2,7 +2,7 @@
 
 IMPORTANT: The creative menu is completely client side, making it not work inside this inventory. Use it in any other inventory and it works. !!!
 
-#Ender Bundle
+# Ender Bundle
 
 Ender Bundle is a 1.17 vanilla + style Forge mod, inspired on the "item shadowing" glitch. It adds an ender bundle and hopper, who can be linked to each other.
 The bundle and hopper then share the same inventory and you are able take and put items in the inventory via the bundle and hopper.
