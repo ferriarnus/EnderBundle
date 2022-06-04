@@ -3,9 +3,9 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Gradle Build
+name: Build Jars
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -13,14 +13,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 17
+
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'adopt'
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+          distribution: 'temurin'
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
+
+      - name: Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+        env:
+          GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
+          VERSION_CLS: ci
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Enderbundle-jar
+          path: build/libs/*.jar
