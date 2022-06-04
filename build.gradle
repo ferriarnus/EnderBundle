@@ -16,7 +16,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.10'
+version = '1.10.1'
 group = 'com.ferri.arnus.enderbundle' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'enderbundle'
 
@@ -45,6 +45,9 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -67,6 +70,9 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -89,6 +95,9 @@ minecraft {
 
         data {
             workingDirectory project.file('run')
+            
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -128,14 +137,21 @@ repositories {
     
     maven {
     // location of the maven that hosts JEI files
-    name = "Progwml6 maven"
-    url = "https://dvs1.progwml6.com/files/maven/"
+       name = "Progwml6 maven"
+       url = "https://dvs1.progwml6.com/files/maven/"
   	}
   	maven {
     // location of a maven mirror for JEI files, as a fallback
     name = "ModMaven"
-    url = "https://modmaven.k-4u.nl"
-  }
+        url = "https://modmaven.k-4u.nl"
+    }
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+    maven {	
+        name = "BlameJared" 
+        url = "https://maven.blamejared.com/" 
+    }
 }
 
 dependencies {
@@ -146,11 +162,11 @@ dependencies {
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     //compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    //runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    runtimeOnly fg.deobf("mezz.jei:jei-1.18.2-forge:10.0.0.191") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
     // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
+    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.18.2-8.0.1-147")
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html

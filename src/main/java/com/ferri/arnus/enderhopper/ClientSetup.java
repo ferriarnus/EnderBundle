@@ -36,7 +36,7 @@ public class ClientSetup {
     	MinecraftForgeClient.registerTooltipComponentFactory(EnderBundleToolTip.class, EnderBundleClientToolTip::new);
     	
     	ItemProperties.register(ItemRegistry.ENDER_BUNDLE.get(), new ResourceLocation(EnderBundleMain.MODID,"filled"), (s,l,e,i) -> {
-    		if (e instanceof Player player) {
+    		if (e instanceof Player player && (l == null || l.getGameTime() % 5 == 0)) {
     			EnderChannel.INSTANCE.sendToServer(new EnderEmptyPacket(player.containerMenu.getItems().indexOf(s)));
     		}
 			AtomicBoolean b = new AtomicBoolean(true);

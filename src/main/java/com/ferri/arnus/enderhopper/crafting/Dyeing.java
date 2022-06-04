@@ -53,7 +53,8 @@ public class Dyeing extends ShapelessRecipe{
 		ItemStack dye = getIngredients().get(1).getItems()[0];
 		ItemStack result = item.copy();
 		result.getCapability(DyeProvider.DYEABLE).ifPresent(d -> {
-			d.setColour(DyeColor.getColor(dye).getMaterialColor().col);
+			DyeColor color = DyeColor.getColor(dye);
+			d.setColour(color == null ? DyeColor.GREEN.getMaterialColor().col : color.getMaterialColor().col);
 		});
 		return result;
 	}
