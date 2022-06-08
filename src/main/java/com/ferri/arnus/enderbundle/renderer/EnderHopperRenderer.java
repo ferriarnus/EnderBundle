@@ -1,7 +1,5 @@
 package com.ferri.arnus.enderbundle.renderer;
 
-import java.util.Random;
-
 import com.ferri.arnus.enderbundle.blockentity.EnderHopperBE;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -13,6 +11,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
 public class EnderHopperRenderer implements BlockEntityRenderer<EnderHopperBE>{
@@ -26,7 +25,7 @@ public class EnderHopperRenderer implements BlockEntityRenderer<EnderHopperBE>{
 		Matrix4f matrix4f = pMatrixStack.last().pose();
 		this.renderFace(pBlockEntity, matrix4f, pBuffer.getBuffer(RenderType.endPortal()), 0.0F, 1.0F, 0.75F, 0.75F, 1.0F, 1.0F, 0.0F, 0.0F);
 		Level level = pBlockEntity.getLevel();
-		Random pRand = level.random;
+		RandomSource pRand = level.random;
 		BlockPos pPos = pBlockEntity.getBlockPos();
 		if (!EnderHopperBE.playerClose(level, pPos, pBlockEntity)) {
 			return;
