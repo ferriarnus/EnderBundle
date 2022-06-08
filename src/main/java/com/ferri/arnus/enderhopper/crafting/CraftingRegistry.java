@@ -2,24 +2,22 @@ package com.ferri.arnus.enderhopper.crafting;
 
 import com.ferri.arnus.enderhopper.EnderBundleMain;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = EnderBundleMain.MODID)
 public class CraftingRegistry {
-
-	@SubscribeEvent
-	public static void registerSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-		event.getRegistry().register(name(Dyeing.SERIALIZER, "dyeing"));
+	
+	private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, EnderBundleMain.MODID);
+	
+	public static void registerRecipe() {
+		RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 	
-	private static <T extends IForgeRegistryEntry<? extends T>> T name(T entry, String name) {
-		return entry.setRegistryName(new ResourceLocation(EnderBundleMain.MODID, name));
-	}
-	
+	private static RegistryObject<RecipeSerializer<Dyeing>> DYEING = RECIPE_SERIALIZERS.register("dyeing", () -> Dyeing.SERIALIZER);
 	
 }

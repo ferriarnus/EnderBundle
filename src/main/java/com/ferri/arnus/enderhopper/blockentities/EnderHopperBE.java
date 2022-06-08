@@ -13,12 +13,10 @@ import com.ferri.arnus.enderhopper.items.ItemRegistry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -47,12 +45,14 @@ public class EnderHopperBE extends BlockEntity {
 	private LazyOptional<IItemHandler> extract = LazyOptional.of(() -> new ExtractWrapper(handler));
 	private LazyOptional<IItemHandler> insert = LazyOptional.of(() -> new InsertWrapper(handler));
 	private UUID uuid = UUID.randomUUID();
-	private Component name = TextComponent.EMPTY;
+	private Component name = CommonComponents.EMPTY;
 	private boolean bound = false;
 	
 	public EnderHopperBE(BlockPos p_155550_, BlockState p_155551_) {
 		super(BlockEntityRegistry.ENDERHOPPER.get(), p_155550_, p_155551_);
 	}
+	
+	
 	
 	public UUID getUuid() {
 		return uuid;
@@ -72,7 +72,7 @@ public class EnderHopperBE extends BlockEntity {
 	
 	public Component getName() {
 		if (this.name.getString().isEmpty()) {
-			return new TranslatableComponent("container.enderhopper.enderhopper");
+			return Component.literal("container.enderhopper.enderhopper");
 		}
 		return name;
 	}
@@ -284,7 +284,7 @@ public class EnderHopperBE extends BlockEntity {
 			this.uuid = UUID.randomUUID();
 		}
 		handler.deserializeNBT(pTag.getCompound("Storage"));
-		this.name = new TextComponent(pTag.getString("name"));
+		this.name = Component.literal(pTag.getString("name"));
 		super.load(pTag);
 	}
 	
@@ -292,6 +292,7 @@ public class EnderHopperBE extends BlockEntity {
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
+	
 
     @Override
     public CompoundTag getUpdateTag() {
@@ -306,7 +307,7 @@ public class EnderHopperBE extends BlockEntity {
 	class HopperStackHandler extends ItemStackHandler {
 		
 		public HopperStackHandler() {
-			stacks = NonNullList.withSize(5, ItemStack.EMPTY);
+			super(5);
 		}
 		
 		@Override

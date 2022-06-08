@@ -17,7 +17,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class Dyeing extends ShapelessRecipe{
 
@@ -64,7 +63,7 @@ public class Dyeing extends ShapelessRecipe{
 		return SERIALIZER;
 	}
 	
-	static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<Dyeing> {
+	static class Serializer implements RecipeSerializer<Dyeing> {
 
 		@Override
 		public Dyeing fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {

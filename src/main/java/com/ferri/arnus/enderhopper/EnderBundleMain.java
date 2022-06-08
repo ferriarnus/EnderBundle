@@ -4,6 +4,7 @@ import com.ferri.arnus.enderhopper.blockentities.BlockEntityRegistry;
 import com.ferri.arnus.enderhopper.blocks.BlockRegistry;
 import com.ferri.arnus.enderhopper.capability.DyeProvider;
 import com.ferri.arnus.enderhopper.capability.EnderStorageProvider;
+import com.ferri.arnus.enderhopper.crafting.CraftingRegistry;
 import com.ferri.arnus.enderhopper.gui.ContainerRegistry;
 import com.ferri.arnus.enderhopper.gui.EnderHopperScreen;
 import com.ferri.arnus.enderhopper.items.ItemRegistry;
@@ -32,6 +33,7 @@ public class EnderBundleMain {
     	BlockEntityRegistry.register();
     	ContainerRegistry.register();
     	EnderChannel.register();
+    	CraftingRegistry.registerRecipe();
     }
     
     public void clientSetup(FMLClientSetupEvent event) {
