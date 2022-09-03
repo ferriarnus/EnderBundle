@@ -34,6 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.PacketDistributor;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class EnderBundle extends Item {
 
 	public EnderBundle() {

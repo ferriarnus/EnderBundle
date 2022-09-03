@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class BlockEntityRegistry {
 
-	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTITYTYPE = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, EnderBundleMain.MODID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTITYTYPE = DeferredRegister.create(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, EnderBundleMain.MODID);
 	
 	public static void register() {
 		BLOCKENTITYTYPE.register(FMLJavaModLoadingContext.get().getModEventBus());

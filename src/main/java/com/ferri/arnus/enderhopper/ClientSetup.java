@@ -19,9 +19,9 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -32,8 +32,6 @@ public class ClientSetup {
 	@SubscribeEvent
 	static void clientSetup(FMLClientSetupEvent event) {
     	MenuScreens.register(ContainerRegistry.ENDER_HOPPER.get(), EnderHopperScreen::new);
-    	
-    	MinecraftForgeClient.registerTooltipComponentFactory(EnderBundleToolTip.class, EnderBundleClientToolTip::new);
     	
     	ItemProperties.register(ItemRegistry.ENDER_BUNDLE.get(), new ResourceLocation(EnderBundleMain.MODID,"filled"), (s,l,e,i) -> {
     		if (e instanceof Player player && (l == null || l.getGameTime() % 5 == 0)) {
@@ -48,12 +46,17 @@ public class ClientSetup {
     }
 	
 	@SubscribeEvent
+	static void RegisterClientTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+		event.register(EnderBundleToolTip.class, EnderBundleClientToolTip::new);
+	}
+	
+	@SubscribeEvent
 	static void registerBERS(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(BlockEntityRegistry.ENDERHOPPER.get(), EnderHopperRenderer::new);
     }
 	
 	@SubscribeEvent
-	public static void registerItemColor(ColorHandlerEvent.Item event) {
+	public static void registerItemColor(RegisterColorHandlersEvent.Item event) {
 		event.getItemColors().register(new EnderBundleColor(), ItemRegistry.ENDER_BUNDLE.get());
 	}
 }

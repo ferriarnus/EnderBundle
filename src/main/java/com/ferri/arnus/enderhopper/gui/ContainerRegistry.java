@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ContainerRegistry {
 
-public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, EnderBundleMain.MODID);
+public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.Keys.MENU_TYPES, EnderBundleMain.MODID);
 	
 	public static void register() {
 		CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());

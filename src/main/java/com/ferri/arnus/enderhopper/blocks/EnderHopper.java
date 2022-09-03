@@ -149,7 +149,7 @@ public class EnderHopper extends Block implements EntityBlock{
 						return hopper.getName();
 					}
 				};
-				NetworkHooks.openGui((ServerPlayer) pPlayer, p, blockentity.getBlockPos());
+				NetworkHooks.openScreen((ServerPlayer) pPlayer, p, blockentity.getBlockPos());
 			}
 			return InteractionResult.CONSUME;
 		}
