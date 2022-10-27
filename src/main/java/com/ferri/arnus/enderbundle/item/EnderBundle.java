@@ -134,6 +134,9 @@ public class EnderBundle extends Item{
 	@Override
 	public boolean overrideOtherStackedOnMe(ItemStack pStack, ItemStack pOther, Slot pSlot, ClickAction pAction, Player pPlayer, SlotAccess pAccess) {
 		if (pAction == ClickAction.SECONDARY && pSlot.allowModification(pPlayer)) {
+			if (!pStack.is(ItemRegistry.ENDERBUNDLE)) {
+				return false;
+			}
 			EnderStorage enderStorage = new EnderStorage(pStack);
 			if (pPlayer.level.getServer() == null) {
 				return false;
@@ -194,6 +197,9 @@ public class EnderBundle extends Item{
 	         return false;
 		}
 		ItemStack pOther = pSlot.getItem();
+		if (!pStack.is(ItemRegistry.ENDERBUNDLE)) {
+			return false;
+		}
 		EnderStorage enderStorage = new EnderStorage(pStack);
 		if (pPlayer.level.getServer() == null) {
 			return false;

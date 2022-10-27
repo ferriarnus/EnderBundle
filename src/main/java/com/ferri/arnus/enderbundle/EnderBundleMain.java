@@ -45,6 +45,9 @@ public class EnderBundleMain implements ModInitializer {
 				if (slot != -1) {
 					stack = player.containerMenu.getItems().get(slot);
 				}
+				if (!stack.is(ItemRegistry.ENDERBUNDLE)) {
+					return;
+				}
 				EnderStorage enderStorage = new EnderStorage(stack);
 				boolean empty = true;
 				int damage = 0;
