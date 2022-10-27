@@ -34,9 +34,9 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -47,12 +47,11 @@ public class EnderHopperBE extends BlockEntity {
 	private UUID uuid = UUID.randomUUID();
 	private Component name = CommonComponents.EMPTY;
 	private boolean bound = false;
+	private boolean loaded = false;
 	
 	public EnderHopperBE(BlockPos p_155550_, BlockState p_155551_) {
 		super(BlockEntityRegistry.ENDERHOPPER.get(), p_155550_, p_155551_);
 	}
-	
-	
 	
 	public UUID getUuid() {
 		return uuid;
@@ -72,7 +71,7 @@ public class EnderHopperBE extends BlockEntity {
 	
 	public Component getName() {
 		if (this.name.getString().isEmpty()) {
-			return Component.literal("container.enderhopper.enderhopper");
+			return Component.translatable("container.enderhopper.enderhopper");
 		}
 		return name;
 	}
@@ -113,17 +112,19 @@ public class EnderHopperBE extends BlockEntity {
 		if (level.getGameTime() %3 == 2) {
 			pushItem(level, pos, state.getValue(EnderHopper.FACING), hopper);
 		}
-		if (level instanceof ServerLevel server && hopper.isBound()) {
+		if (level instanceof ServerLevel server && hopper.isBound() && !hopper.loaded) {
+			hopper.loaded = true;
 			ForgeChunkManager.forceChunk(server, EnderBundleMain.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, true, false);
 		}
-		if (level instanceof ServerLevel server && !hopper.isBound()) {
+		if (level instanceof ServerLevel server && !hopper.isBound() && hopper.loaded) {
+			hopper.loaded = false;
 			ForgeChunkManager.forceChunk(server, EnderBundleMain.MODID, pos, level.getChunkAt(pos).getPos().x, level.getChunkAt(pos).getPos().z, false, false);
 		}
 	}
 	
 	public static void entityInside(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity, EnderHopperBE pBlockEntity) {
 		if (pEntity instanceof ItemEntity item && Shapes.joinIsNotEmpty(Shapes.create(pEntity.getBoundingBox().move((double)(-pPos.getX()), (double)(-pPos.getY()), (double)(-pPos.getZ()))), pBlockEntity.getSuckShape(), BooleanOp.AND)) {
-			pBlockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(cap -> {
+			pBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(cap -> {
 				for (int i=0; i< cap.getSlots(); i++) {
 					if (!ItemStack.matches(item.getItem(), cap.insertItem(i, item.getItem(), true))) {
 						ItemStack s = cap.insertItem(i,item.getItem().copy() ,false);
@@ -164,20 +165,20 @@ public class EnderHopperBE extends BlockEntity {
 		LazyOptional<IItemHandler> h = LazyOptional.empty() ;
 		if (be == null) {
 			List<Entity> list = level.getEntities((Entity)null, new AABB(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, pos.getX() + 1.5D, pos.getY() + 1.5D, pos.getZ() + 1.5D), (e) -> {
-				return e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN).isPresent();
+				return e.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN).isPresent();
 			});
 			if (!list.isEmpty()) {
 				Entity entity = list.get(level.random.nextInt(list.size()));
 				if (entity instanceof LivingEntity) {
 					return;
 				}
-				h = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+				h = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN);
 			}
 		}else {
-			h = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.DOWN);
+			h = be.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN);
 		}
 		h.ifPresent(behandler -> {
-			hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP).ifPresent(hopperhandler -> {
+			hopper.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).ifPresent(hopperhandler -> {
 				for (int i=0; i< behandler.getSlots(); i++) {
 					ItemStack extractItem = behandler.extractItem(i, 1, true);
 					if (extractItem != ItemStack.EMPTY) {
@@ -201,20 +202,20 @@ public class EnderHopperBE extends BlockEntity {
 		LazyOptional<IItemHandler> h = LazyOptional.empty() ;
 		if (be == null) {
 			List<Entity> list = level.getEntities((Entity)null, new AABB(pos.getX() - 0.5D, pos.getY() - 0.5D, pos.getZ() - 0.5D, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D), (e) -> {
-				return e.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
+				return e.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
 			});
 			if (!list.isEmpty()) {
 				Entity entity = list.get(level.random.nextInt(list.size()));
 				if (entity instanceof LivingEntity) {
 					return;
 				}
-				h = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+				h = entity.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite());
 			}
 		}else {
-			h = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+			h = be.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite());
 		}
 		h.ifPresent(behandler -> {
-			hopper.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).ifPresent(hopperhandler -> {
+			hopper.getCapability(ForgeCapabilities.ITEM_HANDLER, side).ifPresent(hopperhandler -> {
 				for (int i=0; i< hopperhandler.getSlots(); i++) {
 					ItemStack extractItem = hopperhandler.extractItem(i, 1, true);
 					if (extractItem != ItemStack.EMPTY) {
@@ -254,10 +255,10 @@ public class EnderHopperBE extends BlockEntity {
 	
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (side != null && side.equals(Direction.UP) && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.getBlockState().getValue(EnderHopper.ENABLED)) {
+		if (side != null && side.equals(Direction.UP) && cap == ForgeCapabilities.ITEM_HANDLER && this.getBlockState().getValue(EnderHopper.ENABLED)) {
 			return this.insert.cast();
 		}
-		if (this.getBlockState().getValue(EnderHopper.FACING).equals(side) && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.getBlockState().getValue(EnderHopper.ENABLED)) {
+		if (this.getBlockState().getValue(EnderHopper.FACING).equals(side) && cap == ForgeCapabilities.ITEM_HANDLER && this.getBlockState().getValue(EnderHopper.ENABLED)) {
 			return this.extract.cast();
 		}
 		return super.getCapability(cap, side);
@@ -272,10 +273,11 @@ public class EnderHopperBE extends BlockEntity {
 		} catch (Exception e) {
 			pTag.putUUID("stack", UUID.randomUUID());
 		}
+		pTag.putBoolean("loaded", loaded);
 		pTag.put("Storage", handler.serializeNBT());
 		pTag.putString("name", this.name.getString());
 	}
-	
+
 	@Override
 	public void load(CompoundTag pTag) {
 		try {
@@ -283,16 +285,16 @@ public class EnderHopperBE extends BlockEntity {
 		} catch (Exception e) {
 			this.uuid = UUID.randomUUID();
 		}
+		this.loaded = pTag.getBoolean("loaded");
 		handler.deserializeNBT(pTag.getCompound("Storage"));
 		this.name = Component.literal(pTag.getString("name"));
 		super.load(pTag);
 	}
-	
+
 	@Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-	
 
     @Override
     public CompoundTag getUpdateTag() {
@@ -301,6 +303,9 @@ public class EnderHopperBE extends BlockEntity {
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+		if (pkt.getTag() == null) {
+			return;
+		}
         this.load(pkt.getTag());
     }
     
